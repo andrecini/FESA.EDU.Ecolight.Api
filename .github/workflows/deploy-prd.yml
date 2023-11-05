@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - ecolight-web-hml
 on:
   push:
     branches:
-      - stage
+      - main
   workflow_dispatch:
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
     runs-on: windows-latest
     needs: build
     environment:
-      name: 'stage'
+      name: 'production''
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
