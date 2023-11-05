@@ -12,8 +12,8 @@ namespace Treinamento.REST.Domain.Entities.EndpointsModel
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime OnDate { get; set; }
-        public DateTime OffDate { get; set; }
+        public TimeOnly OnDate { get; set; }
+        public TimeOnly OffDate { get; set; }
         public int Brightness { get; set; }
         public bool Enable { get; set; }
         public int DeviceId { get; set; }

@@ -2,6 +2,6 @@
 {
     public class GetByIdResponse<T> : BaseResponse
     {
-        public T User { get; set; }
+        public T Result { get; set; }
     }
 }

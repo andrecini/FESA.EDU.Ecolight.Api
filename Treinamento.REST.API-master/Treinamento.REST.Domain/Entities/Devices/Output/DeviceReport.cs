@@ -11,7 +11,7 @@ namespace Treinamento.REST.Domain.Entities.Devices.Output
     {
         public Device Device { get; set; }
         public TimeSpan UsedHours { get; set; }
-        public DeviceStatus Status { get; set; }
+        public SettingsStatus Status { get; set; }
         public float CarbonEmission { get; set; }
         public float DailyKwhUsage { get; set; }
         public float MonthlyKwhUsage { get; set; }

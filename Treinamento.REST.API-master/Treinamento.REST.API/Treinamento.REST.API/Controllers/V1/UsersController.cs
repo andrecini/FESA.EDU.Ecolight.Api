@@ -82,7 +82,7 @@ namespace Treinamento.REST.API.Controllers.V1
                 {
                     Success = false,
                     Message = $"No user with id '{id}' was found",
-                    User = user
+                    Result = user
                 });
             }
 
@@ -90,7 +90,7 @@ namespace Treinamento.REST.API.Controllers.V1
             {
                 Success = true,
                 Message = $"A user with id '{id}' was found",
-                User = user
+                Result = user
             });
         }
 
@@ -119,7 +119,7 @@ namespace Treinamento.REST.API.Controllers.V1
                 Success = true,
                 Message = "User successfully created.",
                 URI = @$"{Request.Scheme}://{Request.Host.Value}/v1/users/{newUser.Id}",
-                CreatedUser = newUser
+                CreatedEntity = newUser
             });
         }
 
@@ -150,7 +150,7 @@ namespace Treinamento.REST.API.Controllers.V1
                 Success = true,
                 Message = "User updated successfully.",
                 URI = @$"{Request.Scheme}://{Request.Host.Value}/v1/users/{id}",
-                UpdatedUser = userUpdated
+                UpdatedEntity = userUpdated
             });
         }
 
@@ -181,7 +181,7 @@ namespace Treinamento.REST.API.Controllers.V1
                 Success = true,
                 Message = "User's role updated successfully.",
                 URI = @$"{Request.Scheme}://{Request.Host.Value}/v1/users/{id}",
-                UpdatedUser = userUpdated
+                UpdatedEntity = userUpdated
             });
         }
 
@@ -212,7 +212,7 @@ namespace Treinamento.REST.API.Controllers.V1
                 Success = true,
                 Message = "User's status updated successfully.",
                 URI = @$"{Request.Scheme}://{Request.Host.Value}/v1/users/{id}",
-                UpdatedUser = userUpdated
+                UpdatedEntity = userUpdated
             });
         }
 

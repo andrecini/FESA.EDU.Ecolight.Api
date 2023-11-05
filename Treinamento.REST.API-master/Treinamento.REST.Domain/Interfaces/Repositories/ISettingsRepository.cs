@@ -11,25 +11,14 @@ namespace Treinamento.REST.Domain.Interfaces.Repositories
 {
     public interface ISettingsRepository
     {
-        IEnumerable<Treinamento.REST.Domain.Entities.Devices.Settings> GetSettings(int skip, int pageSize);
-
+        IEnumerable<Entities.Devices.Settings> GetSettings(int skip, int pageSize);
         int CountSettings();
         int CountActiveSettings();
-
         int CountInactiveSettings();
-
-        Treinamento.REST.Domain.Entities.Devices.Settings GetSettingsById(int id);
-
-        Treinamento.REST.Domain.Entities.Devices.Settings AddSettings(SettingsInput settingsInput);
-
-        Treinamento.REST.Domain.Entities.Devices.Settings UpdateSettings(int settingsId, SettingsInput settingsInput);
-
+        Entities.Devices.Settings GetSettingsById(int id);
+        Entities.Devices.Settings AddSettings(SettingsInput settingsInput);
+        Entities.Devices.Settings UpdateSettings(Entities.Devices.Settings settings);
         bool DeleteSettingsById(int settingsId);
-
-        Treinamento.REST.Domain.Entities.Devices.Settings UpdateSettingsStatus(int settingsId, SettingsStatus status);
-
-        //Device UpdateDeviceUsedHours(int deviceId, int hours);
-
-        //float GetDeviceUsedHours(int deviceId);
+        Entities.Devices.Settings UpdateSettingsStatus(int settingsId, SettingsStatus status);
     }
 }

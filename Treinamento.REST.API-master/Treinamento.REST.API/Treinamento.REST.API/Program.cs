@@ -18,6 +18,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Treinamento.REST.API.Configurations;
 using System.Reflection;
+using Dapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,8 @@ builder.Services.AddSwaggerGen(opt =>
 
 var configuration = builder.Configuration;
 
+SqlMapper.AddTypeHandler<TimeOnly>(new TimeOnlyHandler());
+
 //Add Depedencies Injections
 builder.Services.AddScoped<IEncryptorService, EncryptorService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -58,6 +61,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDeviceService, DeviceService>();
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
 
 
 builder.Services.AddTransient<IDbConnection>((sp) =>

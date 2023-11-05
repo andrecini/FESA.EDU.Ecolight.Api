@@ -24,14 +24,14 @@ namespace Treinamento.REST.Data.Repositories
 
         public Device AddDevice(DeviceInput deviceInput)
         {
-            var sql = $@"INSERT INTO dbo.Users
+            var sql = $@"INSERT INTO Device
                          (
                             Device_Name,
                             Verification_Code,
                             Lamp_Amount,
-                            LOCAL_DESCRIPTION,
-                            STATUS_ENABLE,
-                            EMPRESA_ID
+                            Local_Description,
+                            Status_Enable,
+                            Company_Id
                          )
                          OUTPUT INSERTED.Id
                          VALUES
@@ -54,7 +54,7 @@ namespace Treinamento.REST.Data.Repositories
         public int CountActiveDevices()
         {
             var sql = $@"SELECT COUNT(*)
-                         FROM Devices 
+                         FROM Device 
                          WHERE Status_Enable = 1;";
 
             var device = _dbConnection.QueryFirst<int>(sql);
@@ -75,7 +75,7 @@ namespace Treinamento.REST.Data.Repositories
         public int CountInactiveDevices()
         {
             var sql = $@"SELECT COUNT(*)
-                         FROM Devices 
+                         FROM Device 
                          WHERE Status_Enable = 1;";
 
             var device = _dbConnection.QueryFirst<int>(sql);
@@ -85,13 +85,12 @@ namespace Treinamento.REST.Data.Repositories
 
         public bool DeleteDeviceById(int deviceId)
         {
-            var sql = "DELETE FROM dbo.Devices WHERE Id = @Id";
+            var sql = "DELETE FROM Device WHERE Id = @Id";
 
             var qtdLinhasAfetadas = _dbConnection.Execute(sql, new { Id = deviceId });
 
             return qtdLinhasAfetadas > 0;
         }
-
 
         public Device GetDeviceById(int id)
         {
@@ -103,7 +102,7 @@ namespace Treinamento.REST.Data.Repositories
                             Local_Description as LocalDescription,
                             Status_Enable as Enable,
                             Company_Id as EmpresaId
-                         FROM Devices WHERE Id = @Id;";
+                         FROM Device WHERE Id = @Id;";
 
             var devices = _dbConnection.QueryFirstOrDefault<Device>(sql, new { Id = id });
 
@@ -127,26 +126,28 @@ namespace Treinamento.REST.Data.Repositories
             return devices;
         }
 
-
-        public Device UpdateDevice(int deviceId, DeviceInput deviceInput)
+        public Device UpdateDevice(Device device)
         {
-            var sql = $@"UPDATE dbo.Devices
+            var sql = $@"UPDATE Device
                  SET
+                    Device_Name = @DeviceName,
+                    Verification_Code = @VerificationCode,
                     Local_Description = @LocalDescription,
                     Lamp_Amount = @LampAmount,
-                    Used_Hours = @UsedHours
+                    Status_Enable = @Enable,
+                    Company_Id = @EmpresaId
                  OUTPUT INSERTED.Id
                  WHERE
                     Id = @Id;";
 
-            var Id = _dbConnection.QuerySingle<int>(sql, deviceInput);
+            var Id = _dbConnection.QuerySingle<int>(sql, device);
 
             return GetDeviceById(Id);
         }
 
-        public Device UpdateDeviceStatus(int deviceId, DeviceStatus status)
+        public Device UpdateDeviceStatus(int deviceId, SettingsStatus status)
         {
-            var sql = $@"UPDATE dbo.Devices
+            var sql = $@"UPDATE Device
                  SET
                     STATUS_ENABLE = @Enable
                  OUTPUT INSERTED.Id

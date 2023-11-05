@@ -5,8 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using Treinamento.REST.API.Responses;
 using Treinamento.REST.Domain.Entities.Devices;
 using Treinamento.REST.Domain.Entities.EndpointsModel;
-using Treinamento.REST.Domain.Entities.Users;
-using Treinamento.REST.Domain.Enums;
 using Treinamento.REST.Domain.Interfaces.Services;
 using Treinamento.REST.Services.Services;
 
@@ -74,27 +72,25 @@ namespace Treinamento.REST.API.Controllers.V1
         [Authorize]
         public IActionResult GetDeviceById([Required] int id)
         {
-            //var user = CacheHelper.GetOrSet(_cache, $"users_{id}",
-            //    () => _service.GetUserById(id), TimeSpan.FromMinutes(5));
+            var device = CacheHelper.GetOrSet(_cache, $"device_{id}",
+                () => _service.GetDeviceById(id), TimeSpan.FromMinutes(5));
 
-            //if (user == null)
-            //{
-            //    return StatusCode(StatusCodes.Status404NotFound, new GetByIdResponse<User>()
-            //    {
-            //        Success = false,
-            //        Message = $"No user with id '{id}' was found",
-            //        User = user
-            //    });
-            //}
+            if (device == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new GetByIdResponse<Device>()
+                {
+                    Success = false,
+                    Message = $"No device with id '{id}' was found",
+                    Result = device
+                });
+            }
 
-            //return StatusCode(StatusCodes.Status200OK, new GetByIdResponse<User>()
-            //{
-            //    Success = true,
-            //    Message = $"A user with id '{id}' was found",
-            //    User = user
-            //});
-
-            return Ok(); //Remover depois de inserir a lógica
+            return StatusCode(StatusCodes.Status200OK, new GetByIdResponse<Device>()
+            {
+                Success = true,
+                Message = $"A device with id '{id}' was found",
+                Result = device
+            });
         }
 
         /// <summary>
@@ -110,22 +106,20 @@ namespace Treinamento.REST.API.Controllers.V1
         [HttpPost]
         public IActionResult AddDevice([FromBody] DeviceInput device) 
         {
-            //var newUser = _service.AddUser(user);
+            var newDevice = _service.AddDevice(device);
 
-            //if (newUser == null)
-            //{
-            //    return BadRequest("Unable to Add user. Check the data entered and try again.");
-            //}
+            if (newDevice == null)
+            {
+                return BadRequest("Unable to Add device. Check the data entered and try again.");
+            }
 
-            //return StatusCode(StatusCodes.Status201Created, new PostResponse<User>()
-            //{
-            //    Success = true,
-            //    Message = "User successfully created.",
-            //    URI = @$"{Request.Scheme}://{Request.Host.Value}/v1/users/{newUser.Id}",
-            //    CreatedUser = newUser
-            //});
-
-            return Ok(); //Remover depois de inserir a lógica
+            return StatusCode(StatusCodes.Status201Created, new PostResponse<Device>()
+            {
+                Success = true,
+                Message = "Device successfully created.",
+                URI = @$"{Request.Scheme}://{Request.Host.Value}/v1/devices/{newDevice.Id}",
+                CreatedEntity = newDevice
+            });
         }
 
         /// <summary>
@@ -143,22 +137,20 @@ namespace Treinamento.REST.API.Controllers.V1
         [Authorize]
         public IActionResult UpdateDevice([Required] int id, [FromBody] DeviceInput device)
         {
-            //var userUpdated = _service.UpdateUser(id, user);
+            var deviceUpdated = _service.UpdateDevice(id, device);
 
-            //if (userUpdated == null)
-            //{
-            //    return BadRequest("Unable to Update user. Check the data entered and try again.");
-            //}
+            if (deviceUpdated == null)
+            {
+                return BadRequest("Unable to Update device. Check the data entered and try again.");
+            }
 
-            //return StatusCode(StatusCodes.Status200OK, new PutResponse<User>()
-            //{
-            //    Success = true,
-            //    Message = "User updated successfully.",
-            //    URI = @$"{Request.Scheme}://{Request.Host.Value}/v1/users/{id}",
-            //    UpdatedUser = userUpdated
-            //});
-
-            return Ok(); //Remover depois de inserir a lógica
+            return StatusCode(StatusCodes.Status200OK, new PutResponse<Device>()
+            {
+                Success = true,
+                Message = "Device updated successfully.",
+                URI = @$"{Request.Scheme}://{Request.Host.Value}/v1/devices/{id}",
+                UpdatedEntity = deviceUpdated
+            });
         }
     }
 }

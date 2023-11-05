@@ -23,11 +23,11 @@ namespace Treinamento.REST.Domain.Interfaces.Repositories
 
         Device AddDevice(DeviceInput deviceInput);
 
-        Device UpdateDevice(int deviceId, DeviceInput deviceInput);
+        Device UpdateDevice(Device device);
 
         bool DeleteDeviceById(int deviceId);
 
-        Device UpdateDeviceStatus(int deviceId, DeviceStatus status);
+        Device UpdateDeviceStatus(int deviceId, SettingsStatus status);
 
         //Device UpdateDeviceUsedHours(int deviceId, int hours);
 

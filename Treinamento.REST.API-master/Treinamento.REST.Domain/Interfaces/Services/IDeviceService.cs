@@ -33,7 +33,7 @@ namespace Treinamento.REST.Domain.Interfaces.Services
 
         Device UpdateDeviceLampAmount(int deviceId);
 
-        Device UpdateDeviceStatus(int deviceId, DeviceStatus status);
+        Device UpdateDeviceStatus(int deviceId, SettingsStatus status);
 
         Device UpdateDeviceUsedHours(int deviceId, int hours);
 

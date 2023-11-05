@@ -42,7 +42,7 @@ namespace Treinamento.REST.Services.Services
         {
             var devices = _deviceRepository.GetDevices(skip, pageSize);
 
-            var activeDevices = devices.Where(x => x.Enable == DeviceStatus.Active);
+            var activeDevices = devices.Where(x => x.Enable == SettingsStatus.Active);
 
             return activeDevices;
         }
@@ -51,19 +51,21 @@ namespace Treinamento.REST.Services.Services
         {
             var devices = _deviceRepository.GetDevices(skip, pageSize);
 
-            var inactiveDevices = devices.Where(x => x.Enable == DeviceStatus.Inactive);
+            var inactiveDevices = devices.Where(x => x.Enable == SettingsStatus.Inactive);
 
             return inactiveDevices;
         }
 
         public Device UpdateDevice(int deviceId, DeviceInput deviceInput)
         {
-            var updatedDevice = _deviceRepository.UpdateDevice(deviceId, deviceInput);
+            var device = Device.Map(deviceId, deviceInput);
+
+            var updatedDevice = _deviceRepository.UpdateDevice(device);
 
             return updatedDevice;
         }
 
-        public Device UpdateDeviceStatus(int deviceId, DeviceStatus status)
+        public Device UpdateDeviceStatus(int deviceId, SettingsStatus status)
         {
             var updatedDevice = _deviceRepository.UpdateDeviceStatus(deviceId, status);
 

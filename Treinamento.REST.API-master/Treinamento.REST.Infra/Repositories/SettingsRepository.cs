@@ -1,13 +1,6 @@
-﻿    using Dapper;
-using System;
-using System.Collections.Generic;
+﻿using Dapper;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Treinamento.REST.Domain.Entities.Devices;
 using Treinamento.REST.Domain.Entities.EndpointsModel;
-using Treinamento.REST.Domain.Entities.Users;
 using Treinamento.REST.Domain.Enums;
 using Treinamento.REST.Domain.Interfaces.Repositories;
 using static Dapper.SqlMapper;
@@ -23,9 +16,9 @@ namespace Treinamento.REST.Data.Repositories
             _dbConnection = dbConnection;
         }
 
-        public Treinamento.REST.Domain.Entities.Devices.Settings AddSettings(SettingsInput settingsInput)
+        public Domain.Entities.Devices.Settings AddSettings(SettingsInput settingsInput)
         {
-            var sql = $@"INSERT INTO dbo.Users
+            var sql = $@"INSERT INTO Settings
                          (
                             Settings_Name,
                             Settings_Description,
@@ -88,54 +81,53 @@ namespace Treinamento.REST.Data.Repositories
 
         public bool DeleteSettingsById(int settingsId)
         {
-            var sql = "DELETE FROM dbo.Settings WHERE Id = @Id";
+            var sql = "DELETE FROM Settings WHERE Id = @Id";
 
             var qtdLinhasAfetadas = _dbConnection.Execute(sql, new { Id = settingsId });
 
             return qtdLinhasAfetadas > 0;
         }
 
-
-        public Treinamento.REST.Domain.Entities.Devices.Settings GetSettingsById(int id)
+        public Domain.Entities.Devices.Settings GetSettingsById(int id)
         {
             var sql = $@"SELECT
                             Id as Id,
                             Settings_Name as Name,
                             Settings_Description as Description,
                             OnDate as OnDate,
-                            OffDate as EmpreOffDatesaId,
+                            OffDate as OffDate,
                             Brightness as Brightness,
                             Settings_Enable as Enable,
                             Device_Id as DeviceId
                          FROM Settings WHERE Id = @Id;";
 
-            var settigs = _dbConnection.QueryFirstOrDefault<Treinamento.REST.Domain.Entities.Devices.Settings>(sql, new { Id = id });
+            var settigs = _dbConnection.QueryFirstOrDefault<Domain.Entities.Devices.Settings>(sql, new { Id = id });
 
             return settigs;
         }
 
-        public IEnumerable<Treinamento.REST.Domain.Entities.Devices.Settings> GetSettings(int skip, int pageSize)
+        public IEnumerable<Domain.Entities.Devices.Settings> GetSettings(int skip, int pageSize)
         {
             var sql = $@"SELECT
+                            Id as Id,
                             Settings_Name as Name,
                             Settings_Description as Description,
                             OnDate as OnDate,
-                            OffDate as EmpreOffDatesaId,
+                            OffDate as OffDate,
                             Brightness as Brightness,
                             Settings_Enable as Enable,
-                            Device_Id as DeviceId,
+                            Device_Id as DeviceId
                          FROM Settings
             ";
 
-            var settigs = _dbConnection.Query<Treinamento.REST.Domain.Entities.Devices.Settings>(sql, new { Skip = skip, PageSize = pageSize });
+            var settigs = _dbConnection.Query<Domain.Entities.Devices.Settings>(sql, new { Skip = skip, PageSize = pageSize });
 
             return settigs;
         }
 
-
-        public Treinamento.REST.Domain.Entities.Devices.Settings UpdateSettings(int settingsId, SettingsInput settingsInput)
+        public Domain.Entities.Devices.Settings UpdateSettings(Domain.Entities.Devices.Settings settings)
         {
-            var sql = $@"UPDATE dbo.Settings
+            var sql = $@"UPDATE Settings
                  SET
                     Settings_Name = @Name,
                     Settings_Description = @Description,
@@ -146,14 +138,14 @@ namespace Treinamento.REST.Data.Repositories
                  WHERE
                     Id = @Id;";
 
-            var Id = _dbConnection.QuerySingle<int>(sql, settingsInput);
+            var Id = _dbConnection.QuerySingle<int>(sql, settings);
 
             return GetSettingsById(Id);
         }
 
-        public Treinamento.REST.Domain.Entities.Devices.Settings UpdateSettingsStatus(int settingsId, SettingsStatus status)
+        public Domain.Entities.Devices.Settings UpdateSettingsStatus(int settingsId, SettingsStatus status)
         {
-            var sql = $@"UPDATE dbo.Settings
+            var sql = $@"UPDATE Settings
                  SET
                     SETTINGS_ENABLE = @Enable
                  OUTPUT INSERTED.Id
