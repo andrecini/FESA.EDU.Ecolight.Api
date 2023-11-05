@@ -125,19 +125,17 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    foreach (var description in
+        app.Services.GetRequiredService<IApiVersionDescriptionProvider>().ApiVersionDescriptions)
     {
-        foreach (var description in
-            app.Services.GetRequiredService<IApiVersionDescriptionProvider>().ApiVersionDescriptions)
-        {
-            options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                description.GroupName.ToUpperInvariant());
-        }
-    });
-}
+        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+            description.GroupName.ToUpperInvariant());
+    }
+});
 
 app.UseHttpsRedirection();
 

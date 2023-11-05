@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Treinamento.REST.Domain.Entities.Devices;
+﻿using Treinamento.REST.Domain.Entities.Devices;
 using Treinamento.REST.Domain.Entities.EndpointsModel;
-using Treinamento.REST.Domain.Entities.Users;
 using Treinamento.REST.Domain.Enums;
 using Treinamento.REST.Domain.Interfaces.Repositories;
 using Treinamento.REST.Domain.Interfaces.Services;
