@@ -55,7 +55,7 @@ namespace Treinamento.REST.API.Controllers.V1
                 TotalAmount = _service.GetTotalAmountOfUsers(),
                 Success = true,
                 Message = $"{users.Count()} users found",
-                Users = users
+                Result = users
             });
         }
 

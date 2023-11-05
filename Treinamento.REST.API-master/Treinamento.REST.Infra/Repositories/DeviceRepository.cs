@@ -65,7 +65,7 @@ namespace Treinamento.REST.Data.Repositories
         public int CountDevices()
         {
             var sql = $@"SELECT COUNT(*)
-                         FROM Devices";
+                         FROM Device";
 
             var device = _dbConnection.QueryFirst<int>(sql);
 
@@ -95,7 +95,14 @@ namespace Treinamento.REST.Data.Repositories
 
         public Device GetDeviceById(int id)
         {
-            var sql = $@"SELECT *
+            var sql = $@"SELECT
+                            Id as Id,
+                            Device_Name as DeviceName,
+                            Verification_Code as VerificationCode,
+                            Lamp_Amount as LampAmount,
+                            Local_Description as LocalDescription,
+                            Status_Enable as Enable,
+                            Company_Id as EmpresaId
                          FROM Devices WHERE Id = @Id;";
 
             var devices = _dbConnection.QueryFirstOrDefault<Device>(sql, new { Id = id });
@@ -105,7 +112,15 @@ namespace Treinamento.REST.Data.Repositories
 
         public IEnumerable<Device> GetDevices(int skip, int pageSize)
         {
-            var sql = $@"SELECT * FROM Devices";
+            var sql = $@"SELECT
+                            Id as Id,
+                            Device_Name as DeviceName,
+                            Verification_Code as VerificationCode,
+                            Lamp_Amount as LampAmount,
+                            Local_Description as LocalDescription,
+                            Status_Enable as Enable,
+                            Company_Id as EmpresaId
+                         FROM Device";
 
             var devices = _dbConnection.Query<Device>(sql, new { Skip = skip, PageSize = pageSize });
 

@@ -55,7 +55,10 @@ var configuration = builder.Configuration;
 builder.Services.AddScoped<IEncryptorService, EncryptorService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-// builder.Services.AddScoped<IDeviceService, DeviceService>();
+builder.Services.AddScoped<IDeviceService, DeviceService>();
+builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+
+
 builder.Services.AddTransient<IDbConnection>((sp) =>
 {
     var connectionString = configuration.GetConnectionString("DefaultConnection");

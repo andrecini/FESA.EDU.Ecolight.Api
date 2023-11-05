@@ -27,7 +27,7 @@ namespace Treinamento.REST.Domain.Interfaces.Services
 
         Device AddDevice(DeviceInput deviceInput);
 
-        Device UpdateDevice(int deviceId, UserInput userInput);
+        Device UpdateDevice(int deviceId, DeviceInput deviceInput);
 
         bool DeleteDeviceById(int deviceId);
 

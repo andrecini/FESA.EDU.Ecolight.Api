@@ -5,6 +5,6 @@
         public int Page { get; set; }
         public int PageSize { get; set; }
         public int TotalAmount { get; set; }
-        public IEnumerable<T> Users { get; set; }
+        public IEnumerable<T> Result { get; set; }
     }
 }

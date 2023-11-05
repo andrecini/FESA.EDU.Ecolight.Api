@@ -21,6 +21,16 @@ namespace Treinamento.REST.Services.Services
             _deviceRepository = deviceRepository;
         }
 
+        public IEnumerable<Device> GetDevices(int skip, int pageSize)
+        {
+            return _deviceRepository.GetDevices(skip, pageSize);
+        }
+
+        public Device GetDeviceById(int id)
+        {
+            return _deviceRepository.GetDeviceById(id);
+        }
+
         public Device AddDevice(DeviceInput deviceInput)
         {
             var user = Device.Map(deviceInput);
@@ -28,14 +38,43 @@ namespace Treinamento.REST.Services.Services
             return _deviceRepository.AddDevice(deviceInput);
         }
 
-        public bool DeleteDeviceById(int deviceId)
-        {
-            return _deviceRepository.DeleteDeviceById(deviceId);
-        }
-
         public IEnumerable<Device> GetActiveDevices(int skip, int pageSize)
         {
-            throw new NotImplementedException();
+            var devices = _deviceRepository.GetDevices(skip, pageSize);
+
+            var activeDevices = devices.Where(x => x.Enable == DeviceStatus.Active);
+
+            return activeDevices;
+        }
+
+        public IEnumerable<Device> GetInactiveDevices(int skip, int pageSize)
+        {
+            var devices = _deviceRepository.GetDevices(skip, pageSize);
+
+            var inactiveDevices = devices.Where(x => x.Enable == DeviceStatus.Inactive);
+
+            return inactiveDevices;
+        }
+
+        public Device UpdateDevice(int deviceId, DeviceInput deviceInput)
+        {
+            var updatedDevice = _deviceRepository.UpdateDevice(deviceId, deviceInput);
+
+            return updatedDevice;
+        }
+
+        public Device UpdateDeviceStatus(int deviceId, DeviceStatus status)
+        {
+            var updatedDevice = _deviceRepository.UpdateDeviceStatus(deviceId, status);
+
+            return updatedDevice;
+        }
+
+        public int GetTotalAmountOfDevices()
+        {
+            var totalAmount = _deviceRepository.CountDevices();
+
+            return totalAmount;
         }
 
         public float GetAllDevicesCarbonTax()
@@ -49,11 +88,6 @@ namespace Treinamento.REST.Services.Services
         }
 
         public IEnumerable<Device> GetCriticalDevices(int skip, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Device GetDeviceById(int id)
         {
             throw new NotImplementedException();
         }
@@ -73,17 +107,7 @@ namespace Treinamento.REST.Services.Services
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Device> GetDevices(int skip, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
-
         public float GetDeviceUsedHours(int deviceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Device> GetInactiveDevices(int skip, int pageSize)
         {
             throw new NotImplementedException();
         }
@@ -98,27 +122,17 @@ namespace Treinamento.REST.Services.Services
             throw new NotImplementedException();
         }
 
-        public int GetTotalAmountOfDevices()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Device UpdateDevice(int deviceId, UserInput userInput)
-        {
-            throw new NotImplementedException();
-        }
-
         public Device UpdateDeviceLampAmount(int deviceId)
         {
             throw new NotImplementedException();
         }
 
-        public Device UpdateDeviceStatus(int deviceId, DeviceStatus status)
+        public Device UpdateDeviceUsedHours(int deviceId, int hours)
         {
             throw new NotImplementedException();
         }
 
-        public Device UpdateDeviceUsedHours(int deviceId, int hours)
+        public bool DeleteDeviceById(int deviceId)
         {
             throw new NotImplementedException();
         }
