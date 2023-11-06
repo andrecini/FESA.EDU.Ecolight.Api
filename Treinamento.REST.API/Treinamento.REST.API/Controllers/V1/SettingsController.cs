@@ -94,7 +94,7 @@ namespace Treinamento.REST.API.Controllers.V1
         }
 
         /// <summary>
-        /// Create a new device.
+        /// Create a new settings.
         /// </summary>
         /// <remarks>
         /// This endpoint allows you to create a new settings by providing their basic information.

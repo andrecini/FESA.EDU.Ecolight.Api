@@ -99,9 +99,9 @@ namespace Treinamento.REST.Services.Services
             return userUpdated;
         }
 
-        public Authentication VerifyUser(string username, string password)
+        public Authentication VerifyUser(string email, string password)
         {
-            var auth = _userRepository.VerifyUser(username);
+            var auth = _userRepository.VerifyUser(email);
             var user = _userRepository.GetUserById(auth == null ? 0 : auth.Id);
 
 
