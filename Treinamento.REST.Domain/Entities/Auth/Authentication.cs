@@ -13,5 +13,6 @@ namespace Treinamento.REST.Domain.Entities.Auth
         public string UserName { get; set; }
         public Roles Role { get; set; }
         public TokenModel Token { get; set; }
+        public int EmpresaId { get; set; }
     }
 }
