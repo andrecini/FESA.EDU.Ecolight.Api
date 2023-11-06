@@ -85,8 +85,8 @@ namespace Treinamento.REST.Services.Services
                 DevicesExpenses = GetAllDevicesExpenses(companyId),
                 CriticalDevices = GetCriticalDevices(companyId),
                 AllDevices = GetAllDevices(companyId),
-                MonthlyDeviceExpenses = GetLastSixMonthsExpensesSaving(companyId),
-                MonthlyKwhUsage = GetLastSixMonthsEnergySaving(companyId)
+                MonthlyDevicesExpenseSavings = GetLastSixMonthsExpensesSaving(companyId),
+                MonthlyKwhSavings = GetLastSixMonthsEnergySaving(companyId)
             };
 
             return report;
@@ -98,8 +98,8 @@ namespace Treinamento.REST.Services.Services
             {
                 Active = GetActiveDevices(companyId).Count(),
                 Inactive = GetInactiveDevices(companyId).Count(),
-                MonthlyDeviceExpenses = GetLastSixMonthsExpensesSaving(companyId),
-                MonthlyKwhUsage = GetLastSixMonthsEnergySaving(companyId)
+                MonthlyDeviceExpenses = GetLastSixMonthsExpenses(companyId),
+                MonthlyKwhUsage = GetLastSixMonthsEnergyExpenses(companyId)
             };
 
             dashboard.Total = dashboard.Active + dashboard.Inactive;
@@ -136,6 +136,21 @@ namespace Treinamento.REST.Services.Services
             return list;
         }
 
+        private IEnumerable<float> GetLastSixMonthsExpenses(int companyId)
+        {
+            var devices = GetDevices(companyId);
+            var list = new List<float>();
+
+            for (int i = 5; i >= 0; i--)
+            {
+                var dataAtual = DateTime.Now.AddMonths(-i);
+                var expenses = GetMonthDevicesExpenses(companyId, dataAtual.Month, dataAtual.Year);
+                list.Add(expenses);
+            }
+
+            return list;
+        }
+
         private IEnumerable<float> GetLastSixMonthsEnergySaving(int companyId)
         {
             var devices = GetDevices(companyId);
@@ -146,6 +161,21 @@ namespace Treinamento.REST.Services.Services
                 var dataAtual = DateTime.Now.AddMonths(-i);
                 var energySaving = GetMonthDeviceEnergySaving(companyId, dataAtual.Month, dataAtual.Year);
                 list.Add(energySaving);
+            }
+
+            return list;
+        }
+
+        private IEnumerable<float> GetLastSixMonthsEnergyExpenses(int companyId)
+        {
+            var devices = GetDevices(companyId);
+            var list = new List<float>();
+
+            for (int i = 5; i >= 0; i--)
+            {
+                var dataAtual = DateTime.Now.AddMonths(-i);
+                var expenses = GetMonthDevicesEnergyExpenses(companyId, dataAtual.Month, dataAtual.Year);
+                list.Add(expenses);
             }
 
             return list;
@@ -188,13 +218,26 @@ namespace Treinamento.REST.Services.Services
 
         private float GetMonthDeviceEnergySaving(int companyId, int month, int year)
         {
-            double maxExpenses = 30 * 60 * 24 * _deviceRepository.CountDevices(companyId) / 1000;
+            int totalLampAmount = 0;
+            foreach (var dev in _deviceRepository.GetDevices(companyId))
+            {
+                totalLampAmount += dev.LampAmount;
+            }
+
+            double maxExpenses = 30 * 60 * 24 * totalLampAmount / 1000;
             return (float)maxExpenses - GetMonthDevicesEnergyExpenses(companyId, month, year);
         }
 
         private float GetMonthDeviceExpenseSavings(int companyId, int month, int year)
-        {
-            double maxExpenses = 30 * 60 * 24 * _deviceRepository.CountDevices(companyId) / 1000 * 0.74;
+        {            
+            int totalLampAmount = 0;
+            foreach(var dev in  _deviceRepository.GetDevices(companyId))
+            {
+                totalLampAmount += dev.LampAmount;
+            }
+
+            double maxExpenses = 30 * 60 * 24 * totalLampAmount / 1000 * 0.74;
+
             return (float)maxExpenses - GetMonthDevicesExpenses(companyId, month, year);
         }
 
@@ -236,7 +279,9 @@ namespace Treinamento.REST.Services.Services
                     if (historic.Status == "0")
                     {
                         var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
-                        tempo += (tempoEmSegundos / 3600);
+                        var dev = _deviceRepository.GetDeviceById(deviceId);
+                        var soma = dev.LampAmount * tempoEmSegundos / 3600;
+                        tempo += soma;
                     }
                     else if (historic.Status == "1")
                     {
@@ -269,7 +314,9 @@ namespace Treinamento.REST.Services.Services
                         if (historic.Status == "0")
                         {
                             var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
-                            tempo += (tempoEmSegundos / 3600);
+                            var dev = _deviceRepository.GetDeviceById(key);
+                            var soma = dev.LampAmount * tempoEmSegundos / 3600;
+                            tempo += soma;
                         }
                         else if (historic.Status == "1")
                         {
@@ -305,7 +352,9 @@ namespace Treinamento.REST.Services.Services
                             if (historic.Status == "0")
                             {
                                 var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
-                                tempo += (tempoEmSegundos / 3600);
+                                var dev = _deviceRepository.GetDeviceById(key);
+                                var soma = dev.LampAmount * tempoEmSegundos / 3600;
+                                tempo += soma;
                             }
                             else if (historic.Status == "1")
                             {

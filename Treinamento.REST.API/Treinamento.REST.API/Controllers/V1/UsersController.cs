@@ -106,6 +106,8 @@ namespace Treinamento.REST.API.Controllers.V1
         [HttpPost]
         public IActionResult AddUser([FromBody] UserInput user)
         {
+            if (user.EmpresaId <= 0) return BadRequest("EmpresaId value must be greater than 0.");
+
             var newUser = _service.AddUser(user);
 
             if (newUser == null)

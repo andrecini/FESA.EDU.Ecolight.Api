@@ -84,7 +84,7 @@ namespace Treinamento.REST.Data.Repositories
                             Uf,
                             User_Role,
                             Active,
-                            Empresa_Id
+                            Company_Id
                          )
                          OUTPUT INSERTED.Id
                          VALUES
@@ -137,7 +137,7 @@ namespace Treinamento.REST.Data.Repositories
         {
             var sql = $@"UPDATE dbo.Users
                          SET
-                            Role = @Role
+                            User_Role = @Role
                          WHERE
                             Id = @Id;";
 
@@ -163,11 +163,11 @@ namespace Treinamento.REST.Data.Repositories
             return userUpdated;
         }
 
-        public Authentication VerifyUser(string Username)
+        public Authentication VerifyUser(string email)
         {
-            var sql = $@"SELECT * FROM dbo.Users WHERE Username = @Username;";
+            var sql = $@"SELECT * FROM dbo.Users WHERE Email = @email;";
 
-            var auth = _dbConnection.QueryFirstOrDefault<Authentication>(sql, new { Username = Username });
+            var auth = _dbConnection.QueryFirstOrDefault<Authentication>(sql, new { email = email});
 
             return auth;
         }

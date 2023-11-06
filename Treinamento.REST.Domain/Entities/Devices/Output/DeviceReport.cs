@@ -13,7 +13,7 @@ namespace Treinamento.REST.Domain.Entities.Devices.Output
         public float DevicesExpenses { get; set; }
         public IEnumerable<Device> CriticalDevices { get; set; }
         public IEnumerable<Device> AllDevices { get; set; }
-        public IEnumerable<float> MonthlyKwhUsage { get; set; }
-        public IEnumerable<float> MonthlyDeviceExpenses { get; set; }
+        public IEnumerable<float> MonthlyKwhSavings { get; set; }
+        public IEnumerable<float> MonthlyDevicesExpenseSavings { get; set; }
     }
 }
