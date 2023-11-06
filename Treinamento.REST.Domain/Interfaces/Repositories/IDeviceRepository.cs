@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Treinamento.REST.Domain.Entities.Devices;
+using Treinamento.REST.Domain.Entities.Devices.Output;
 using Treinamento.REST.Domain.Entities.EndpointsModel;
 using Treinamento.REST.Domain.Enums;
 
@@ -11,9 +12,9 @@ namespace Treinamento.REST.Domain.Interfaces.Repositories
 {
     public interface IDeviceRepository
     {
-        IEnumerable<Device> GetDevices(int skip, int pageSize);
+        IEnumerable<Device> GetDevices(int companyId);
 
-        int CountDevices();
+        int CountDevices(int companyId);
 
         int CountActiveDevices();
 
@@ -28,9 +29,5 @@ namespace Treinamento.REST.Domain.Interfaces.Repositories
         bool DeleteDeviceById(int deviceId);
 
         Device UpdateDeviceStatus(int deviceId, SettingsStatus status);
-
-        //Device UpdateDeviceUsedHours(int deviceId, int hours);
-
-        //float GetDeviceUsedHours(int deviceId);
     }
 }

@@ -21,7 +21,18 @@ namespace Treinamento.REST.Data.Repositories
 
         public IEnumerable<User> GetUsers(int skip, int pageSize)
         {
-            var sql = $@"SELECT* FROM dbo.Users
+            var sql = $@"SELECT
+                            Id as Id,
+                            Username as Username,
+                            Email as Email,
+                            User_Password as Password,
+                            Number as Celular,
+                            Cpf as Cpf,
+                            Uf as Uf,
+                            User_Role as Role,
+                            Active as Active,
+                            Company_Id as EmpresaId
+                         FROM dbo.Users
                          ORDER BY Id
                          OFFSET @Skip
                          ROWS
@@ -43,8 +54,17 @@ namespace Treinamento.REST.Data.Repositories
 
         public User GetUserById(int id)
         {
-            var sql = $@"SELECT 
-                         User_Password as Password
+            var sql = $@"SELECT                          
+                            Id as Id,
+                            Username as Username,
+                            Email as Email,
+                            User_Password as Password,
+                            Number as Celular,
+                            Cpf as Cpf,
+                            Uf as Uf,
+                            User_Role as Role,
+                            Active as Active,
+                            Company_Id as EmpresaId
                          FROM dbo.Users WHERE Id = @Id;";
 
             var user = _dbConnection.QueryFirstOrDefault<User>(sql, new { Id = id });
@@ -151,5 +171,6 @@ namespace Treinamento.REST.Data.Repositories
 
             return auth;
         }
+
     }
 }

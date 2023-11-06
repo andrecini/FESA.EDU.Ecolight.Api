@@ -19,6 +19,7 @@ namespace Treinamento.REST.Domain.Entities.Devices
         public int EmpresaId { get; set; }
         public SettingsStatus Enable{ get; set; }
         public float UsedHours { get; set; }
+        public float UsedKWH { get; set; }
 
         public static Device Map(DeviceInput device)
         {

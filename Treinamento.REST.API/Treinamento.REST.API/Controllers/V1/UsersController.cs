@@ -40,8 +40,7 @@ namespace Treinamento.REST.API.Controllers.V1
             if (page <= 0) return BadRequest("The page value must be greater than 0.");
             if (pageSize < 5) return BadRequest("The page size value must be grater or equal than 0.");
 
-            var users = CacheHelper.GetOrSet(_cache, $"users_{page}_{pageSize}",
-                () => _service.GetUsers(page, pageSize), TimeSpan.FromMinutes(5));
+            var users = _service.GetUsers(page, pageSize);
 
             if (users == null)
             {
