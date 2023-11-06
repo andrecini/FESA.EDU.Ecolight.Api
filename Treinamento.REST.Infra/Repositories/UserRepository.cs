@@ -84,7 +84,7 @@ namespace Treinamento.REST.Data.Repositories
                             Uf,
                             User_Role,
                             Active,
-                            Empresa_Id
+                            Company_Id
                          )
                          OUTPUT INSERTED.Id
                          VALUES
@@ -137,7 +137,7 @@ namespace Treinamento.REST.Data.Repositories
         {
             var sql = $@"UPDATE dbo.Users
                          SET
-                            Role = @Role
+                            User_Role = @Role
                          WHERE
                             Id = @Id;";
 

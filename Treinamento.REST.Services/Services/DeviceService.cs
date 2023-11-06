@@ -218,13 +218,26 @@ namespace Treinamento.REST.Services.Services
 
         private float GetMonthDeviceEnergySaving(int companyId, int month, int year)
         {
-            double maxExpenses = 30 * 60 * 24 * _deviceRepository.CountDevices(companyId) / 1000;
+            int totalLampAmount = 0;
+            foreach (var dev in _deviceRepository.GetDevices(companyId))
+            {
+                totalLampAmount += dev.LampAmount;
+            }
+
+            double maxExpenses = 30 * 60 * 24 * totalLampAmount / 1000;
             return (float)maxExpenses - GetMonthDevicesEnergyExpenses(companyId, month, year);
         }
 
         private float GetMonthDeviceExpenseSavings(int companyId, int month, int year)
-        {
-            double maxExpenses = 30 * 60 * 24 * _deviceRepository.CountDevices(companyId) / 1000 * 0.74;
+        {            
+            int totalLampAmount = 0;
+            foreach(var dev in  _deviceRepository.GetDevices(companyId))
+            {
+                totalLampAmount += dev.LampAmount;
+            }
+
+            double maxExpenses = 30 * 60 * 24 * totalLampAmount / 1000 * 0.74;
+
             return (float)maxExpenses - GetMonthDevicesExpenses(companyId, month, year);
         }
 
@@ -266,7 +279,9 @@ namespace Treinamento.REST.Services.Services
                     if (historic.Status == "0")
                     {
                         var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
-                        tempo += (tempoEmSegundos / 3600);
+                        var dev = _deviceRepository.GetDeviceById(deviceId);
+                        var soma = dev.LampAmount * tempoEmSegundos / 3600;
+                        tempo += soma;
                     }
                     else if (historic.Status == "1")
                     {
@@ -299,7 +314,9 @@ namespace Treinamento.REST.Services.Services
                         if (historic.Status == "0")
                         {
                             var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
-                            tempo += (tempoEmSegundos / 3600);
+                            var dev = _deviceRepository.GetDeviceById(key);
+                            var soma = dev.LampAmount * tempoEmSegundos / 3600;
+                            tempo += soma;
                         }
                         else if (historic.Status == "1")
                         {
@@ -335,7 +352,9 @@ namespace Treinamento.REST.Services.Services
                             if (historic.Status == "0")
                             {
                                 var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
-                                tempo += (tempoEmSegundos / 3600);
+                                var dev = _deviceRepository.GetDeviceById(key);
+                                var soma = dev.LampAmount * tempoEmSegundos / 3600;
+                                tempo += soma;
                             }
                             else if (historic.Status == "1")
                             {
