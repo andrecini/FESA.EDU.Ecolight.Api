@@ -105,7 +105,7 @@ namespace Treinamento.REST.Data.Repositories
             return devices;
         }
 
-        public IEnumerable<Device> GetDevices(int skip, int pageSize)
+        public IEnumerable<Device> GetDevices(int companyId)
         {
             var sql = $@"SELECT
                             Id as Id,
@@ -115,9 +115,10 @@ namespace Treinamento.REST.Data.Repositories
                             Local_Description as LocalDescription,
                             Status_Enable as Enable,
                             Company_Id as EmpresaId
-                         FROM Device";
+                         FROM Device
+                         WHERE Company_Id = @companyId";
 
-            var devices = _dbConnection.Query<Device>(sql, new { Skip = skip, PageSize = pageSize });
+            var devices = _dbConnection.Query<Device>(sql, new { companyId = companyId });
 
             return devices;
         }

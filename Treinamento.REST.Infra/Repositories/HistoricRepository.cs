@@ -39,17 +39,16 @@ namespace Treinamento.REST.Data.Repositories
         public IEnumerable<Historic> GetHistoricsByCompanyId(int companyId)
         {
             var sql = $@"SELECT 
-                         Id as Id,
-                         Historic_Date as Date,
-                         Historic_Description as Description,
-                         Historic_Status as Status,
-                         Device_Id as DeviceId,
-                         Company_Id as CompanyId 
+                             Id as Id,
+                             Historic_Date as Date,
+                             Historic_Description as Description,
+                             Historic_Status as Status,
+                             Device_Id as DeviceId,
+                             Company_Id as CompanyId 
                          FROM Historic
                          WHERE Company_Id = @companyId 
                          ORDER BY Historic_Date;";
 
-            // Se pa ta errado aqui na variável Company_Id, André!!!! 
             var historics = _dbConnection.Query<Historic>(sql, new { companyId = companyId });
 
             return historics;

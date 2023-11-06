@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Design;
 using Treinamento.REST.Domain.Entities.Devices;
+using Treinamento.REST.Domain.Entities.Devices.Output;
 using Treinamento.REST.Domain.Entities.EndpointsModel;
 using Treinamento.REST.Domain.Enums;
 using Treinamento.REST.Domain.Interfaces.Repositories;
@@ -18,9 +19,9 @@ namespace Treinamento.REST.Services.Services
             _historicService = historicService;
         }
 
-        public IEnumerable<Device> GetDevices(int skip, int pageSize)
+        public IEnumerable<Device> GetDevices(int companyId)
         {
-            return _deviceRepository.GetDevices(skip, pageSize);
+            return _deviceRepository.GetDevices(companyId);
         }
 
         public Device GetDeviceById(int id)
@@ -35,18 +36,18 @@ namespace Treinamento.REST.Services.Services
             return _deviceRepository.AddDevice(deviceInput);
         }
 
-        public IEnumerable<Device> GetActiveDevices(int skip, int pageSize)
+        public IEnumerable<Device> GetActiveDevices(int companyId)
         {
-            var devices = _deviceRepository.GetDevices(skip, pageSize);
+            var devices = _deviceRepository.GetDevices(companyId);
 
             var activeDevices = devices.Where(x => x.Enable == SettingsStatus.Active);
 
             return activeDevices;
         }
 
-        public IEnumerable<Device> GetInactiveDevices(int skip, int pageSize)
+        public IEnumerable<Device> GetInactiveDevices(int companyId)
         {
-            var devices = _deviceRepository.GetDevices(skip, pageSize);
+            var devices = _deviceRepository.GetDevices(companyId);
 
             var inactiveDevices = devices.Where(x => x.Enable == SettingsStatus.Inactive);
 
@@ -76,22 +77,97 @@ namespace Treinamento.REST.Services.Services
             return totalAmount;
         }
 
-        public float GetAllDevicesCarbonTax(int companyId)
+        public DeviceReport GetDeviceReport(int companyId)
+        {
+            var report = new DeviceReport
+            {
+                CarbonEmission = GetAllDevicesCarbonTax(companyId),
+                DevicesExpenses = GetAllDevicesExpenses(companyId),
+                CriticalDevices = GetCriticalDevices(companyId),
+                AllDevices = GetAllDevices(companyId),
+                MonthlyDeviceExpenses = GetLastSixMonthsExpensesSaving(companyId),
+                MonthlyKwhUsage = GetLastSixMonthsEnergySaving(companyId)
+            };
+
+            return report;
+        }
+
+        public Dashboard GetDashboard(int companyId)
+        {
+            var dashboard = new Dashboard
+            {
+                Active = GetActiveDevices(companyId).Count(),
+                Inactive = GetInactiveDevices(companyId).Count(),
+                MonthlyDeviceExpenses = GetLastSixMonthsExpensesSaving(companyId),
+                MonthlyKwhUsage = GetLastSixMonthsEnergySaving(companyId)
+            };
+
+            dashboard.Total = dashboard.Active + dashboard.Inactive;
+
+            return dashboard;
+        }
+
+        #region Reports Methods
+
+        private IEnumerable<Device> GetAllDevices(int companyId)
+        {
+            var devices = GetDevices(companyId);
+
+            foreach (var device in devices)
+            {
+                device.UsedKWH = GetMonthDevicesEnergyExpenses(companyId, DateTime.Now.Month, DateTime.Now.Year);
+            }
+
+            return devices;
+        }
+
+        private IEnumerable<float> GetLastSixMonthsExpensesSaving(int companyId)
+        {
+            var devices = GetDevices(companyId);
+            var list = new List<float>();
+
+            for (int i = 5; i >= 0; i--)
+            {
+                var dataAtual = DateTime.Now.AddMonths(-i);
+                var expenseSaving = GetMonthDeviceExpenseSavings(companyId, dataAtual.Month, dataAtual.Year);
+                list.Add(expenseSaving);
+            }
+
+            return list;
+        }
+
+        private IEnumerable<float> GetLastSixMonthsEnergySaving(int companyId)
+        {
+            var devices = GetDevices(companyId);
+            var list = new List<float>();
+
+            for (int i = 5; i >= 0; i--)
+            {
+                var dataAtual = DateTime.Now.AddMonths(-i);
+                var energySaving = GetMonthDeviceEnergySaving(companyId, dataAtual.Month, dataAtual.Year);
+                list.Add(energySaving);
+            }
+
+            return list;
+        }
+
+        private float GetAllDevicesCarbonTax(int companyId)
         {
             return GetDevicesUsedHoursByCompanyId(companyId) * (float)0.0125;
         }
 
-        public float GetAllDevicesExpenses(int companyId)
+        private float GetAllDevicesExpenses(int companyId)
         {
             double kwhPrice = 0.74;
 
             return (GetDevicesUsedHoursByCompanyId(companyId) * 60 / 1000) * (float)kwhPrice;
         }
 
-        public IEnumerable<Device> GetCriticalDevices(int skip, int pageSize)
+        private IEnumerable<Device> GetCriticalDevices(int companyId)
         {
             List<Device> criticalDevices = new List<Device>();
-            var devices = GetDevices(skip, pageSize);
+            var devices = GetDevices(companyId);
+
             foreach (var device in devices)
             {
                 var tempo = GetDeviceUsedHoursByDeviceId(device.Id);
@@ -102,59 +178,45 @@ namespace Treinamento.REST.Services.Services
             return criticalDevices;
         }
 
-        public float GetDeviceExpenses(int deviceId)
+        private float GetDeviceExpenses(int deviceId)
         {
-            double kwh = 0.74;
-            double watt = 60;
+            var kwh = (float)0.74;
+            var watt = (float)60;
 
-            return (GetDeviceUsedHoursByDeviceId(deviceId) * 60 / 1000) * (float)kwh;
+            return (GetDeviceUsedHoursByDeviceId(deviceId) * watt / 1000) * (float)kwh;
         }
 
-        public float GetMonthDeviceEnergySaving(int companyId, int month, int year)
+        private float GetMonthDeviceEnergySaving(int companyId, int month, int year)
         {
-            double maxExpenses = 30 * 60 * 24 * _deviceRepository.CountDevices(companyId) /1000;
+            double maxExpenses = 30 * 60 * 24 * _deviceRepository.CountDevices(companyId) / 1000;
             return (float)maxExpenses - GetMonthDevicesEnergyExpenses(companyId, month, year);
         }
 
-        public float GetMonthDeviceExpenseSavings(int companyId, int month, int year)
+        private float GetMonthDeviceExpenseSavings(int companyId, int month, int year)
         {
             double maxExpenses = 30 * 60 * 24 * _deviceRepository.CountDevices(companyId) / 1000 * 0.74;
             return (float)maxExpenses - GetMonthDevicesExpenses(companyId, month, year);
         }
 
-        public float GetDeviceUsedHours(int deviceId)
+        private float GetDeviceUsedHours(int deviceId)
         {
             return GetDeviceUsedHoursByDeviceId(deviceId);
         }
 
-        public float GetMonthDevicesEnergyExpenses(int companyId, int month, int year)
+        private float GetMonthDevicesEnergyExpenses(int companyId, int month, int year)
         {
             var watt = 60;
 
-            return (GetMonthDevicesUsedHoursByCompanyId(companyId, month, year) * (float)watt)/1000;
+            return (GetMonthDevicesUsedHoursByCompanyId(companyId, month, year) * (float)watt) / 1000;
         }
 
-        public float GetMonthDevicesExpenses(int companyId, int month, int year)
+        private float GetMonthDevicesExpenses(int companyId, int month, int year)
         {
             var kwh = 0.74;
 
             return GetMonthDevicesEnergyExpenses(companyId, month, year) * (float)kwh;
         }
 
-        public Device UpdateDeviceLampAmount(int deviceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Device UpdateDeviceUsedHours(int deviceId, int hours)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool DeleteDeviceById(int deviceId)
-        {
-            throw new NotImplementedException();
-        }
         private float GetDeviceUsedHoursByDeviceId(int deviceId)
         {
             List<int> ids = new List<int>();
@@ -183,44 +245,43 @@ namespace Treinamento.REST.Services.Services
                 }
             }
 
-                return (float)tempo;
-            }
+            return (float)tempo;
+        }
 
+        private float GetDevicesUsedHoursByCompanyId(int companyId)
+        {
+            List<int> ids = new List<int>();
+            var historics = _historicService.GetHistoricsByCompanyId(companyId);
+            double tempo = 0;
 
-            private float GetDevicesUsedHoursByCompanyId(int companyId)
+            foreach (var historic in historics)
+                if (!ids.Contains(historic.DeviceId))
+                    ids.Add(historic.DeviceId);
+
+            foreach (int key in ids)
             {
-                List<int> ids = new List<int>();
-                var historics = _historicService.GetHistoricsByCompanyId(companyId);
-                double tempo = 0;
-
+                DateTime hoje = DateTime.Now;
+                DateTime dataInicio = new DateTime(hoje.Year, hoje.Month, 1, 0, 0, 0);
                 foreach (var historic in historics)
-                    if (!ids.Contains(historic.DeviceId))
-                        ids.Add(historic.DeviceId);
-
-                foreach (int key in ids)
                 {
-                    DateTime hoje = DateTime.Now;
-                    DateTime dataInicio = new DateTime(hoje.Year, hoje.Month, 1, 0, 0, 0);
-                    foreach (var historic in historics)
+                    if (historic.DeviceId == key)
                     {
-                        if (historic.DeviceId == key)
+                        if (historic.Status == "0")
                         {
-                            if (historic.Status == "0")
-                            {
-                                var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
-                                tempo += (tempoEmSegundos / 3600);
-                            }
-                            else if (historic.Status == "1")
-                            {
-                                dataInicio = historic.Date;
-                            }
+                            var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
+                            tempo += (tempoEmSegundos / 3600);
+                        }
+                        else if (historic.Status == "1")
+                        {
+                            dataInicio = historic.Date;
                         }
                     }
                 }
-
-                return (float)tempo;
-
             }
+
+            return (float)tempo;
+
+        }
 
         private float GetMonthDevicesUsedHoursByCompanyId(int companyId, int month, int year)
         {
@@ -257,5 +318,7 @@ namespace Treinamento.REST.Services.Services
             return (float)tempo;
         }
 
-        }
+        #endregion
+
     }
+}

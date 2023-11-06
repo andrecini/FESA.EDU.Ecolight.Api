@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Treinamento.REST.Domain.Entities.Auth;
 using Treinamento.REST.Domain.Entities.Devices;
+using Treinamento.REST.Domain.Entities.Devices.Output;
 using Treinamento.REST.Domain.Entities.EndpointsModel;
 using Treinamento.REST.Domain.Entities.Users;
 using Treinamento.REST.Domain.Enums;
@@ -13,43 +14,12 @@ namespace Treinamento.REST.Domain.Interfaces.Services
 {
     public interface IDeviceService
     {
-        IEnumerable<Device> GetDevices(int skip, int pageSize);
-
-        IEnumerable<Device> GetCriticalDevices(int skip, int pageSize);
-
-        IEnumerable<Device> GetActiveDevices(int skip, int pageSize);
-
-        IEnumerable<Device> GetInactiveDevices(int skip, int pageSize);
-
+        IEnumerable<Device> GetDevices(int companyId);
         Device GetDeviceById(int id);
-
         int GetTotalAmountOfDevices(int companyId);
-
         Device AddDevice(DeviceInput deviceInput);
-
         Device UpdateDevice(int deviceId, DeviceInput deviceInput);
-
-        bool DeleteDeviceById(int deviceId);
-
-        Device UpdateDeviceLampAmount(int deviceId);
-
-        Device UpdateDeviceStatus(int deviceId, SettingsStatus status);
-
-        float GetDeviceUsedHours(int deviceId);
-
-        float GetDeviceExpenses(int deviceId);
-
-        float GetMonthDeviceEnergySaving(int companyId, int month, int year);
-
-        float GetMonthDevicesExpenses(int companyId, int month, int year);
-        
-        float GetMonthDevicesEnergyExpenses(int companyId, int month, int year);
-
-        float GetMonthDeviceExpenseSavings(int companyId, int month, int year);
-
-        float GetAllDevicesCarbonTax(int companyId);
-
-        float GetAllDevicesExpenses(int companyId);
-
+        DeviceReport GetDeviceReport(int companyId);
+        Dashboard GetDashboard(int companyId);
     }
 }
