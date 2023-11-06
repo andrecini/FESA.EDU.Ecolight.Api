@@ -163,11 +163,11 @@ namespace Treinamento.REST.Data.Repositories
             return userUpdated;
         }
 
-        public Authentication VerifyUser(string Username)
+        public Authentication VerifyUser(string email)
         {
-            var sql = $@"SELECT * FROM dbo.Users WHERE Username = @Username;";
+            var sql = $@"SELECT * FROM dbo.Users WHERE Email = @email;";
 
-            var auth = _dbConnection.QueryFirstOrDefault<Authentication>(sql, new { Username = Username });
+            var auth = _dbConnection.QueryFirstOrDefault<Authentication>(sql, new { email = email});
 
             return auth;
         }

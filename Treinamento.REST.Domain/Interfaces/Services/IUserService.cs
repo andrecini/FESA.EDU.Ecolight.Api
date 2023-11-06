@@ -28,6 +28,6 @@ namespace Treinamento.REST.Domain.Interfaces.Services
 
         User UpdateUserStatus(int userId, UserStatus status);
 
-        Authentication VerifyUser(string username, string password);
+        Authentication VerifyUser(string email, string password);
     }
 }
