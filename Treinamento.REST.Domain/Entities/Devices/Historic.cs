@@ -13,5 +13,7 @@ namespace Treinamento.REST.Domain.Entities.Devices
         public string Description { get; set; }
         public string Status { get; set; }
         public int DeviceId { get; set; }
+
+        public int CompanyId { get; set; }
     }
 }

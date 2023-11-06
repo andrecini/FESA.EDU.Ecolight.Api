@@ -1,4 +1,5 @@
-﻿using Treinamento.REST.Domain.Entities.Devices;
+﻿using System.ComponentModel.Design;
+using Treinamento.REST.Domain.Entities.Devices;
 using Treinamento.REST.Domain.Entities.EndpointsModel;
 using Treinamento.REST.Domain.Enums;
 using Treinamento.REST.Domain.Interfaces.Repositories;
@@ -9,10 +10,12 @@ namespace Treinamento.REST.Services.Services
     public class DeviceService : IDeviceService
     {
         private readonly IDeviceRepository _deviceRepository;
+        private readonly IHistoricService _historicService;
 
-        public DeviceService(IDeviceRepository deviceRepository)
+        public DeviceService(IDeviceRepository deviceRepository, IHistoricService historicService)
         {
             _deviceRepository = deviceRepository;
+            _historicService = historicService;
         }
 
         public IEnumerable<Device> GetDevices(int skip, int pageSize)
@@ -66,56 +69,76 @@ namespace Treinamento.REST.Services.Services
             return updatedDevice;
         }
 
-        public int GetTotalAmountOfDevices()
+        public int GetTotalAmountOfDevices(int companyId)
         {
-            var totalAmount = _deviceRepository.CountDevices();
+            var totalAmount = _deviceRepository.CountDevices(companyId);
 
             return totalAmount;
         }
 
-        public float GetAllDevicesCarbonTax()
+        public float GetAllDevicesCarbonTax(int companyId)
         {
-            throw new NotImplementedException();
+            return GetDevicesUsedHoursByCompanyId(companyId) * (float)0.0125;
         }
 
-        public float GetAllDevicesExpenses()
+        public float GetAllDevicesExpenses(int companyId)
         {
-            throw new NotImplementedException();
+            double kwhPrice = 0.74;
+
+            return (GetDevicesUsedHoursByCompanyId(companyId) * 60 / 1000) * (float)kwhPrice;
         }
 
         public IEnumerable<Device> GetCriticalDevices(int skip, int pageSize)
         {
-            throw new NotImplementedException();
-        }
+            List<Device> criticalDevices = new List<Device>();
+            var devices = GetDevices(skip, pageSize);
+            foreach (var device in devices)
+            {
+                var tempo = GetDeviceUsedHoursByDeviceId(device.Id);
+                if (tempo > 100)
+                    criticalDevices.Add(device);
+            }
 
-        public float GetDeviceEnergySaving(int deviceId)
-        {
-            throw new NotImplementedException();
+            return criticalDevices;
         }
 
         public float GetDeviceExpenses(int deviceId)
         {
-            throw new NotImplementedException();
+            double kwh = 0.74;
+            double watt = 60;
+
+            return (GetDeviceUsedHoursByDeviceId(deviceId) * 60 / 1000) * (float)kwh;
         }
 
-        public float GetDeviceExpenseSavings(int deviceId)
+        public float GetMonthDeviceEnergySaving(int companyId, int month, int year)
         {
-            throw new NotImplementedException();
+            double maxExpenses = 30 * 60 * 24 * _deviceRepository.CountDevices(companyId) /1000;
+            return (float)maxExpenses - GetMonthDevicesEnergyExpenses(companyId, month, year);
+        }
+
+        public float GetMonthDeviceExpenseSavings(int companyId, int month, int year)
+        {
+            double maxExpenses = 30 * 60 * 24 * _deviceRepository.CountDevices(companyId) / 1000 * 0.74;
+            return (float)maxExpenses - GetMonthDevicesExpenses(companyId, month, year);
         }
 
         public float GetDeviceUsedHours(int deviceId)
         {
-            throw new NotImplementedException();
+            return GetDeviceUsedHoursByDeviceId(deviceId);
         }
 
-        public float GetMonthDeviceEnergyExpenses(int deviceId, int month)
+        public float GetMonthDevicesEnergyExpenses(int companyId, int month, int year)
         {
-            throw new NotImplementedException();
+            var watt = 60;
+
+            return (GetMonthDevicesUsedHoursByCompanyId(companyId, month, year) * (float)watt)/1000;
         }
 
-        public float GetMonthDeviceExpenses(int deviceId, int month)
+        public float GetMonthDevicesExpenses(int companyId, int month, int year)
         {
-            throw new NotImplementedException();
+            var kwh = 0.74;
+
+            return GetMonthDevicesEnergyExpenses(companyId, month, year) * (float)kwh;
         }
 
         public Device UpdateDeviceLampAmount(int deviceId)
@@ -132,5 +155,107 @@ namespace Treinamento.REST.Services.Services
         {
             throw new NotImplementedException();
         }
+        private float GetDeviceUsedHoursByDeviceId(int deviceId)
+        {
+            List<int> ids = new List<int>();
+            double tempo = 0;
+            var historics = _historicService.GetHistorics();
+
+            foreach (var historic in historics)
+                if (!ids.Contains(historic.DeviceId))
+                    ids.Add(historic.DeviceId);
+
+            DateTime hoje = DateTime.Now;
+            DateTime dataInicio = new DateTime(hoje.Year, hoje.Month, 1, 0, 0, 0);
+            foreach (var historic in historics)
+            {
+                if (historic.DeviceId == deviceId)
+                {
+                    if (historic.Status == "0")
+                    {
+                        var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
+                        tempo += (tempoEmSegundos / 3600);
+                    }
+                    else if (historic.Status == "1")
+                    {
+                        dataInicio = historic.Date;
+                    }
+                }
+            }
+
+                return (float)tempo;
+            }
+
+
+            private float GetDevicesUsedHoursByCompanyId(int companyId)
+            {
+                List<int> ids = new List<int>();
+                var historics = _historicService.GetHistoricsByCompanyId(companyId);
+                double tempo = 0;
+
+                foreach (var historic in historics)
+                    if (!ids.Contains(historic.DeviceId))
+                        ids.Add(historic.DeviceId);
+
+                foreach (int key in ids)
+                {
+                    DateTime hoje = DateTime.Now;
+                    DateTime dataInicio = new DateTime(hoje.Year, hoje.Month, 1, 0, 0, 0);
+                    foreach (var historic in historics)
+                    {
+                        if (historic.DeviceId == key)
+                        {
+                            if (historic.Status == "0")
+                            {
+                                var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
+                                tempo += (tempoEmSegundos / 3600);
+                            }
+                            else if (historic.Status == "1")
+                            {
+                                dataInicio = historic.Date;
+                            }
+                        }
+                    }
+                }
+
+                return (float)tempo;
+
+            }
+
+        private float GetMonthDevicesUsedHoursByCompanyId(int companyId, int month, int year)
+        {
+            List<int> ids = new List<int>();
+            var historics = _historicService.GetHistoricsByCompanyId(companyId);
+            double tempo = 0;
+
+            foreach (var historic in historics)
+                if (!ids.Contains(historic.DeviceId))
+                    ids.Add(historic.DeviceId);
+
+            foreach (int key in ids)
+            {
+                DateTime hoje = DateTime.Now;
+                DateTime dataInicio = new DateTime(hoje.Year, hoje.Month, 1, 0, 0, 0);
+                foreach (var historic in historics)
+                {
+                    if (historic.Date.Month == month && historic.Date.Year == year)
+                        if (historic.DeviceId == key)
+                        {
+                            if (historic.Status == "0")
+                            {
+                                var tempoEmSegundos = (historic.Date - dataInicio).TotalSeconds;
+                                tempo += (tempoEmSegundos / 3600);
+                            }
+                            else if (historic.Status == "1")
+                            {
+                                dataInicio = historic.Date;
+                            }
+                        }
+                }
+            }
+
+            return (float)tempo;
+        }
+
+        }
     }
-}

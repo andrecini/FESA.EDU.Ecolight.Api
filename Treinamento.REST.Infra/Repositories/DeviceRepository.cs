@@ -56,12 +56,13 @@ namespace Treinamento.REST.Data.Repositories
             return device;
         }
 
-        public int CountDevices()
+        public int CountDevices(int companyId)
         {
             var sql = $@"SELECT COUNT(*)
-                         FROM Device";
+                         FROM Device
+                         WHERE Company_Id = @companyId";
 
-            var device = _dbConnection.QueryFirst<int>(sql);
+            var device = _dbConnection.QueryFirst<int>(sql, new {companyId = companyId});
 
             return device;
         }
@@ -85,6 +86,7 @@ namespace Treinamento.REST.Data.Repositories
 
             return qtdLinhasAfetadas > 0;
         }
+
 
         public Device GetDeviceById(int id)
         {

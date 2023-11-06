@@ -151,5 +151,6 @@ namespace Treinamento.REST.Data.Repositories
 
             return auth;
         }
+
     }
 }

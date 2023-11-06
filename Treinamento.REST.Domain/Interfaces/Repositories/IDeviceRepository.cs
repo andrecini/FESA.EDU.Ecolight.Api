@@ -13,7 +13,7 @@ namespace Treinamento.REST.Domain.Interfaces.Repositories
     {
         IEnumerable<Device> GetDevices(int skip, int pageSize);
 
-        int CountDevices();
+        int CountDevices(int companyId);
 
         int CountActiveDevices();
 

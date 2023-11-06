@@ -23,7 +23,7 @@ namespace Treinamento.REST.Domain.Interfaces.Services
 
         Device GetDeviceById(int id);
 
-        int GetTotalAmountOfDevices();
+        int GetTotalAmountOfDevices(int companyId);
 
         Device AddDevice(DeviceInput deviceInput);
 
@@ -35,23 +35,21 @@ namespace Treinamento.REST.Domain.Interfaces.Services
 
         Device UpdateDeviceStatus(int deviceId, SettingsStatus status);
 
-        Device UpdateDeviceUsedHours(int deviceId, int hours);
-
         float GetDeviceUsedHours(int deviceId);
 
         float GetDeviceExpenses(int deviceId);
 
-        float GetDeviceEnergySaving(int deviceId);
+        float GetMonthDeviceEnergySaving(int companyId, int month, int year);
 
-        float GetMonthDeviceExpenses(int deviceId, int month);
+        float GetMonthDevicesExpenses(int companyId, int month, int year);
         
-        float GetMonthDeviceEnergyExpenses(int deviceId, int month);
+        float GetMonthDevicesEnergyExpenses(int companyId, int month, int year);
 
-        float GetDeviceExpenseSavings(int deviceId);
+        float GetMonthDeviceExpenseSavings(int companyId, int month, int year);
 
-        float GetAllDevicesCarbonTax();
+        float GetAllDevicesCarbonTax(int companyId);
 
-        float GetAllDevicesExpenses();
+        float GetAllDevicesExpenses(int companyId);
 
     }
 }
