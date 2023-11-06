@@ -29,18 +29,14 @@ namespace Treinamento.REST.API.Controllers.V1
         /// <summary>
         /// Retrieves a list of devices.
         /// </summary>
-        /// <param name="page">Page number, greater than or equal to 1.</param>
-        /// <param name="pageSize">Page size, greater than or equal to 5.</param>
+        /// <param name="companyId">Company Id, greater than or equal to 1.</param>
         /// <returns>Returns a list of Devices.</returns>
         [HttpGet]
         [Authorize]
-        public IActionResult GetDevices([Required] int page, [Required] int pageSize)
+        public IActionResult GetDevices([Required] int companyId)
         {
-            if (page <= 0) return BadRequest("The page value must be greater than 0.");
-            if (pageSize < 5) return BadRequest("The page size value must be grater or equal than 0.");
-
-            var devices = CacheHelper.GetOrSet(_cache, $"devices_{page}_{pageSize}",
-                () => _service.GetDevices(page, pageSize), TimeSpan.FromMinutes(5));
+            var devices = CacheHelper.GetOrSet(_cache, $"devices_{companyId}",
+                () => _service.GetDevices(companyId), TimeSpan.FromMinutes(5));
 
             if (devices == null)
             {
@@ -49,9 +45,7 @@ namespace Treinamento.REST.API.Controllers.V1
 
             return StatusCode(StatusCodes.Status200OK, new GetResponse<Device>()
             {
-                Page = page,
-                PageSize = pageSize,
-                TotalAmount = _service.GetTotalAmountOfDevices(),
+                TotalAmount = _service.GetTotalAmountOfDevices(companyId),
                 Success = true,
                 Message = $"{devices.Count()} devices found",
                 Result = devices
@@ -72,7 +66,7 @@ namespace Treinamento.REST.API.Controllers.V1
         [Authorize]
         public IActionResult GetDeviceById([Required] int id)
         {
-            var device = CacheHelper.GetOrSet(_cache, $"device_{id}",
+            var device = CacheHelper.GetOrSet(_cache, $"device_byId_{id}",
                 () => _service.GetDeviceById(id), TimeSpan.FromMinutes(5));
 
             if (device == null)

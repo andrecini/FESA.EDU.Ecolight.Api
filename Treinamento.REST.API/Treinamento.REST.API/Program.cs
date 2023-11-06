@@ -58,6 +58,8 @@ SqlMapper.AddTypeHandler<TimeOnly>(new TimeOnlyHandler());
 builder.Services.AddScoped<IEncryptorService, EncryptorService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IHistoricRepository, HistoricRepository>();
+builder.Services.AddScoped<IHistoricService, HistoricService>();
 builder.Services.AddScoped<IDeviceService, DeviceService>();
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();

@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Treinamento.REST.Domain.Enums;
 
 namespace Treinamento.REST.Domain.Entities.Devices.Output
 {
-    public class DeviceReport
+    public class Dashboard
     {
-        public float CarbonEmission { get; set; }
-        public float DevicesExpenses { get; set; }
-        public IEnumerable<Device> CriticalDevices { get; set; }
-        public IEnumerable<Device> AllDevices { get; set; }
+        public int Active { get; set; }
+        public int Inactive { get; set; }
+        public int Total { get; set; }
         public IEnumerable<float> MonthlyKwhUsage { get; set; }
         public IEnumerable<float> MonthlyDeviceExpenses { get; set; }
     }

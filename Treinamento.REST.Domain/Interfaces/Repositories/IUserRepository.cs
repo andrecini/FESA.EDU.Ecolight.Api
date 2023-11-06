@@ -20,7 +20,7 @@ namespace Treinamento.REST.Domain.Interfaces.Repositories
 
         User UpdateUserRole(int userId, Roles role);
 
-        User UpdateUserStatus(int Id, UserStatus status);
+        User UpdateUserStatus(int Id, UserStatus status);     
 
         Authentication VerifyUser(string username);
     }
