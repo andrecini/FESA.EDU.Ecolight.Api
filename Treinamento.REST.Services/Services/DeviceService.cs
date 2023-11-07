@@ -200,9 +200,11 @@ namespace Treinamento.REST.Services.Services
 
             foreach (var device in devices)
             {
+                device.UsedKWH = GetMonthDevicesEnergyExpenses(companyId, DateTime.Now.Month, DateTime.Now.Year);
+
                 var tempo = GetDeviceUsedHoursByDeviceId(device.Id);
                 if (tempo > 100)
-                    criticalDevices.Add(device);
+                    criticalDevices.Add(device);                
             }
 
             return criticalDevices;
