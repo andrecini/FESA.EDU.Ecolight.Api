@@ -11,10 +11,10 @@ namespace Treinamento.REST.Domain.Interfaces.Repositories
 {
     public interface ISettingsRepository
     {
-        IEnumerable<Entities.Devices.Settings> GetSettings(int skip, int pageSize);
-        int CountSettings();
-        int CountActiveSettings();
-        int CountInactiveSettings();
+        IEnumerable<Entities.Devices.Settings> GetSettings(int companyId);
+        int CountSettings(int companyId);
+        int CountActiveSettings(int companyId);
+        int CountInactiveSettings(int companyId);
         Entities.Devices.Settings GetSettingsById(int id);
         Entities.Devices.Settings AddSettings(SettingsInput settingsInput);
         Entities.Devices.Settings UpdateSettings(Entities.Devices.Settings settings);
