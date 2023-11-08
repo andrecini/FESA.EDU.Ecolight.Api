@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,9 +22,9 @@ namespace Treinamento.REST.Services.Services
             _settingsRepository = settingsRepository;
         }
 
-        public IEnumerable<Settings> GetSettings(int skip, int pageSize)
+        public IEnumerable<Settings> GetSettings(int companyId)
         {
-            return _settingsRepository.GetSettings(skip, pageSize);
+            return _settingsRepository.GetSettings(companyId);
         }
 
         public Settings GetSettingsById(int id)
@@ -36,18 +37,18 @@ namespace Treinamento.REST.Services.Services
             return _settingsRepository.AddSettings(settingsInput);
         }
 
-        public IEnumerable<Settings> GetActiveSettings(int skip, int pageSize)
+        public IEnumerable<Settings> GetActiveSettings(int companyId)
         {
-            var settings = _settingsRepository.GetSettings(skip, pageSize);
+            var settings = _settingsRepository.GetSettings(companyId);
 
             var activeSettings = settings.Where(x => x.Enable == true);
 
             return activeSettings;
         }
 
-        public IEnumerable<Settings> GetInactiveSettings(int skip, int pageSize)
+        public IEnumerable<Settings> GetInactiveSettings(int companyId)
         {
-            var settings = _settingsRepository.GetSettings(skip, pageSize);
+            var settings = _settingsRepository.GetSettings(companyId);
 
             var inactiveSettings = settings.Where(x => x.Enable == false);
 
@@ -70,9 +71,9 @@ namespace Treinamento.REST.Services.Services
             return updatedDevice;
         }
 
-        public int GetTotalAmountOfSettings()
+        public int GetTotalAmountOfSettings(int companyId)
         { 
-            var totalAmount = _settingsRepository.CountSettings();
+            var totalAmount = _settingsRepository.CountSettings(companyId);
 
             return totalAmount;
         }

@@ -26,21 +26,18 @@ namespace Treinamento.REST.API.Controllers.V1
             _cache = cache;
         }
 
+
         /// <summary>
-        /// Retrieves a list of settings.
+        ///  Retrieves a list of settings.
         /// </summary>
-        /// <param name="page">Page number, greater than or equal to 1.</param>
-        /// <param name="pageSize">Page size, greater than or equal to 5.</param>
+        /// <param name="companyId"></param>
         /// <returns>Returns a list of Settings.</returns>
         [HttpGet]
         [Authorize]
-        public IActionResult GetSettings([Required] int page, [Required] int pageSize)
+        public IActionResult GetSettings([Required] int companyId)
         {
-            if (page <= 0) return BadRequest("The page value must be greater than 0.");
-            if (pageSize < 5) return BadRequest("The page size value must be grater or equal than 0.");
 
-            var settings = CacheHelper.GetOrSet(_cache, $"settings_{page}_{pageSize}",
-                () => _service.GetSettings(page, pageSize), TimeSpan.FromMinutes(5));
+            var settings = _service.GetSettings(companyId);
 
             if (settings == null)
             {
@@ -49,9 +46,7 @@ namespace Treinamento.REST.API.Controllers.V1
 
             return StatusCode(StatusCodes.Status200OK, new GetResponse<Settings>()
             {
-                Page = page,
-                PageSize = pageSize,
-                TotalAmount = _service.GetTotalAmountOfSettings(),
+                TotalAmount = _service.GetTotalAmountOfSettings(companyId),
                 Success = true,
                 Message = $"{settings.Count()} settings found",
                 Result = settings
@@ -72,8 +67,7 @@ namespace Treinamento.REST.API.Controllers.V1
         [Authorize]
         public IActionResult GetSettingsById([Required] int id)
         {
-            var settings = CacheHelper.GetOrSet(_cache, $"settings_{id}",
-                () => _service.GetSettingsById(id), TimeSpan.FromMinutes(5));
+            var settings = _service.GetSettingsById(id);
 
             if (settings == null)
             {
