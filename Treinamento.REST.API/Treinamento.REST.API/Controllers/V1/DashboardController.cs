@@ -31,7 +31,7 @@ namespace Treinamento.REST.API.Controllers.V1
         /// Retrieves a Dashboard Data.
         /// </summary>
         /// <param name="companyId">Company Id, greater than or equal to 1.</param>
-        /// <returns>Returns a list of Devices.</returns>
+        /// <returns>Returns a list of Dashboard Data.</returns>
         [HttpGet()]
         [Authorize]
         public IActionResult GetDashboard([Required] int companyId)
