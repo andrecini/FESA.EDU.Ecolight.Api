@@ -74,41 +74,5 @@ namespace Treinamento.REST.API.Controllers.V1
                 Result = report
             });
         }
-
-        [HttpGet("Teste")]
-        public IActionResult Teste([Required] int companyId)
-        {
-            var report = _service.GetDashboard(companyId);
-
-            if (report == null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while communicating with the database.");
-            }
-
-            return StatusCode(StatusCodes.Status200OK, new GetByIdResponse<Dashboard>()
-            {
-                Success = true,
-                Message = $"Report data was found",
-                Result = report
-            });
-        }
-
-        [HttpGet("Teste2")]
-        public IActionResult Teste2([Required] int companyId)
-        {
-            var report = _service.GetDeviceReport(companyId);
-
-            if (report == null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while communicating with the database.");
-            }
-
-            return StatusCode(StatusCodes.Status200OK, new GetByIdResponse<DeviceReport>()
-            {
-                Success = true,
-                Message = $"Report data was found",
-                Result = report
-            });
-        }
     }
 }
