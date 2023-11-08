@@ -133,6 +133,13 @@ namespace Treinamento.REST.Services.Services
                 list.Add(expenseSaving);
             }
 
+            for (int i = 5; i >= 0; i--)
+            {
+                var dado = list[i].ToString("F").Replace('.', ',');
+                list[i] = Convert.ToSingle(dado);
+
+            }
+
             return list;
         }
 
@@ -146,6 +153,14 @@ namespace Treinamento.REST.Services.Services
                 var dataAtual = DateTime.Now.AddMonths(-i);
                 var expenses = GetMonthDevicesExpenses(companyId, dataAtual.Month, dataAtual.Year);
                 list.Add(expenses);
+            }
+
+
+            for (int i = 5; i >= 0; i--)
+            {
+                var dado = list[i].ToString("F").Replace('.',',');
+                list[i] = Convert.ToSingle(dado);
+                
             }
 
             return list;
@@ -163,6 +178,13 @@ namespace Treinamento.REST.Services.Services
                 list.Add(energySaving);
             }
 
+            for (int i = 5; i >= 0; i--)
+            {
+                var dado = list[i].ToString("F").Replace('.', ',');
+                list[i] = Convert.ToSingle(dado);
+
+            }
+
             return list;
         }
 
@@ -176,6 +198,13 @@ namespace Treinamento.REST.Services.Services
                 var dataAtual = DateTime.Now.AddMonths(-i);
                 var expenses = GetMonthDevicesEnergyExpenses(companyId, dataAtual.Month, dataAtual.Year);
                 list.Add(expenses);
+            }
+
+            for (int i = 5; i >= 0; i--)
+            {
+                var dado = list[i].ToString("F").Replace('.', ',');
+                list[i] = Convert.ToSingle(dado);
+
             }
 
             return list;
