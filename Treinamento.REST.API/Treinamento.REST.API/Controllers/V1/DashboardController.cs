@@ -31,7 +31,7 @@ namespace Treinamento.REST.API.Controllers.V1
         /// Retrieves a Dashboard Data.
         /// </summary>
         /// <param name="companyId">Company Id, greater than or equal to 1.</param>
-        /// <returns>Returns a list of Devices.</returns>
+        /// <returns>Returns a list of Dashboard Data.</returns>
         [HttpGet()]
         [Authorize]
         public IActionResult GetDashboard([Required] int companyId)
@@ -59,42 +59,6 @@ namespace Treinamento.REST.API.Controllers.V1
         [HttpGet("report")]
         [Authorize]
         public IActionResult GetReport([Required] int companyId)
-        {
-            var report = _service.GetDeviceReport(companyId);
-
-            if (report == null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while communicating with the database.");
-            }
-
-            return StatusCode(StatusCodes.Status200OK, new GetByIdResponse<DeviceReport>()
-            {
-                Success = true,
-                Message = $"Report data was found",
-                Result = report
-            });
-        }
-
-        [HttpGet("Teste")]
-        public IActionResult Teste([Required] int companyId)
-        {
-            var report = _service.GetDashboard(companyId);
-
-            if (report == null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while communicating with the database.");
-            }
-
-            return StatusCode(StatusCodes.Status200OK, new GetByIdResponse<Dashboard>()
-            {
-                Success = true,
-                Message = $"Report data was found",
-                Result = report
-            });
-        }
-
-        [HttpGet("Teste2")]
-        public IActionResult Teste2([Required] int companyId)
         {
             var report = _service.GetDeviceReport(companyId);
 

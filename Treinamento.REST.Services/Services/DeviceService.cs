@@ -135,7 +135,7 @@ namespace Treinamento.REST.Services.Services
 
             for (int i = 5; i >= 0; i--)
             {
-                var dado = list[i].ToString("F").Replace('.', ',');
+                var dado = list[i].ToString("F");
                 list[i] = Convert.ToSingle(dado);
 
             }
@@ -158,9 +158,8 @@ namespace Treinamento.REST.Services.Services
 
             for (int i = 5; i >= 0; i--)
             {
-                var dado = list[i].ToString("F").Replace('.',',');
+                var dado = list[i].ToString("F");
                 list[i] = Convert.ToSingle(dado);
-                
             }
 
             return list;
@@ -180,7 +179,7 @@ namespace Treinamento.REST.Services.Services
 
             for (int i = 5; i >= 0; i--)
             {
-                var dado = list[i].ToString("F").Replace('.', ',');
+                var dado = list[i].ToString("F");
                 list[i] = Convert.ToSingle(dado);
 
             }
@@ -202,7 +201,7 @@ namespace Treinamento.REST.Services.Services
 
             for (int i = 5; i >= 0; i--)
             {
-                var dado = list[i].ToString("F").Replace('.', ',');
+                var dado = list[i].ToString("F");
                 list[i] = Convert.ToSingle(dado);
 
             }
