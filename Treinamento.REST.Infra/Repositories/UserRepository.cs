@@ -165,7 +165,19 @@ namespace Treinamento.REST.Data.Repositories
 
         public Authentication VerifyUser(string email)
         {
-            var sql = $@"SELECT * FROM dbo.Users WHERE Email = @email;";
+            var sql = $@"SELECT                          
+                            Id as Id,
+                            Username as Username,
+                            Email as Email,
+                            User_Password as Password,
+                            Number as Celular,
+                            Cpf as Cpf,
+                            Uf as Uf,
+                            User_Role as Role,
+                            Active as Active,
+                            Company_Id as EmpresaId
+                            FROM dbo.Users 
+                            WHERE Email = @email;";
 
             var auth = _dbConnection.QueryFirstOrDefault<Authentication>(sql, new { email = email});
 

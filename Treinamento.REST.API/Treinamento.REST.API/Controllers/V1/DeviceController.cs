@@ -35,8 +35,7 @@ namespace Treinamento.REST.API.Controllers.V1
         [Authorize]
         public IActionResult GetDevices([Required] int companyId)
         {
-            var devices = CacheHelper.GetOrSet(_cache, $"devices_{companyId}",
-                () => _service.GetDevices(companyId), TimeSpan.FromMinutes(5));
+            var devices = _service.GetDevices(companyId);
 
             if (devices == null)
             {
@@ -66,8 +65,7 @@ namespace Treinamento.REST.API.Controllers.V1
         [Authorize]
         public IActionResult GetDeviceById([Required] int id)
         {
-            var device = CacheHelper.GetOrSet(_cache, $"device_byId_{id}",
-                () => _service.GetDeviceById(id), TimeSpan.FromMinutes(5));
+            var device = _service.GetDeviceById(id);
 
             if (device == null)
             {

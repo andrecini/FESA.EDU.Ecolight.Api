@@ -47,34 +47,38 @@ namespace Treinamento.REST.Data.Repositories
             return newUser;
         }
 
-        public int CountActiveSettings()
+        public int CountActiveSettings(int companyId)
         {
             var sql = $@"SELECT COUNT(*)
-                         FROM Settings 
-                         WHERE Settings_Enable = 1;";
+                         FROM Settings INNER JOIN device on Device_Id = device.Id 
+                         WHERE Company_Id = @companyId
+                         AND Settings_Enable = 1;";
 
-            var settigs = _dbConnection.QueryFirst<int>(sql);
+            var settigs = _dbConnection.QueryFirst<int>(sql, new { companyId = companyId });
 
             return settigs;
         }
 
-        public int CountSettings()
+        public int CountSettings(int companyId)
         {
             var sql = $@"SELECT COUNT(*)
-                         FROM Settings";
+                         FROM Settings INNER JOIN device on Device_Id = device.Id 
+                         WHERE Company_Id = @companyId";
 
-            var settigs = _dbConnection.QueryFirst<int>(sql);
+            var settigs = _dbConnection.QueryFirst<int>(sql, new { companyId = companyId });
 
             return settigs;
         }
 
-        public int CountInactiveSettings()
+        public int CountInactiveSettings(int companyId)
         {
             var sql = $@"SELECT COUNT(*)
-                         FROM Settings 
-                         WHERE Settings_Enable = 1;";
+                         FROM Settings select
+                         INNER JOIN device on Device_Id = device.Id 
+                         WHERE Company_Id = @companyId 
+                         AND Settings_Enable = 0;";
 
-            var settigs = _dbConnection.QueryFirst<int>(sql);
+            var settigs = _dbConnection.QueryFirst<int>(sql, new { companyId = companyId });
 
             return settigs;
         }
@@ -106,21 +110,21 @@ namespace Treinamento.REST.Data.Repositories
             return settigs;
         }
 
-        public IEnumerable<Domain.Entities.Devices.Settings> GetSettings(int skip, int pageSize)
+        public IEnumerable<Domain.Entities.Devices.Settings> GetSettings(int companyId)
         {
             var sql = $@"SELECT
-                            Id as Id,
-                            Settings_Name as Name,
-                            Settings_Description as Description,
-                            OnDate as OnDate,
-                            OffDate as OffDate,
-                            Brightness as Brightness,
-                            Settings_Enable as Enable,
-                            Device_Id as DeviceId
-                         FROM Settings
+                             settings_name as Name,
+                             Settings_Description as Description,
+                             OnDate,
+                             OffDate,
+                             Brightness,
+                             Settings_Enable as Enable,
+                             Device_Id as DeviceId
+                         FROM settings INNER JOIN device on Device_Id = device.Id 
+                         WHERE Company_Id = @companyId
             ";
 
-            var settigs = _dbConnection.Query<Domain.Entities.Devices.Settings>(sql, new { Skip = skip, PageSize = pageSize });
+            var settigs = _dbConnection.Query<Domain.Entities.Devices.Settings>(sql, new { companyId = companyId });
 
             return settigs;
         }

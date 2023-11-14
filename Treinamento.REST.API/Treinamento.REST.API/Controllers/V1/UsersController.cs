@@ -72,8 +72,7 @@ namespace Treinamento.REST.API.Controllers.V1
         [Authorize]
         public IActionResult GetUserById([Required] int id)
         {
-            var user = CacheHelper.GetOrSet(_cache, $"users_{id}",
-                () => _service.GetUserById(id), TimeSpan.FromMinutes(5));
+            var user = _service.GetUserById(id);
 
             if (user == null)
             {
@@ -107,7 +106,6 @@ namespace Treinamento.REST.API.Controllers.V1
         public IActionResult AddUser([FromBody] UserInput user)
         {
             if (user.EmpresaId <= 0) return BadRequest("EmpresaId value must be greater than 0.");
-
             var newUser = _service.AddUser(user);
 
             if (newUser == null)
@@ -231,8 +229,7 @@ namespace Treinamento.REST.API.Controllers.V1
         [Authorize]
         public IActionResult DeleteUser([Required] int id)
         {
-            var result = CacheHelper.GetOrSet(_cache, $"delete_{id}",
-                () => _service.DeleteUserById(id), TimeSpan.FromMinutes(5));
+            var result = _service.DeleteUserById(id);
 
             if (!result)
             {
