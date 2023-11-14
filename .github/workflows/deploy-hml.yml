@@ -22,6 +22,13 @@ jobs:
           dotnet-version: '7.x'
           include-prerelease: true
 
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '${{env.DOTNET_ROOT}}\myapp\appsettings.json'
+        env:
+          ConnectionStrings.DefaultConnection: ${{ secrets.CONNECTION_STRING_HML }}
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
@@ -42,13 +49,6 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: App Settings Variable Substitution
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: '${{env.DOTNET_ROOT}}\myapp\appsettings.json'
-        env:
-          ConnectionStrings.DefaultConnection: ${{ secrets.CONNECTION_STRING_HML }}
-
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
