@@ -27,6 +27,13 @@ jobs:
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+      
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '${{env.DOTNET_ROOT}}\myapp\appsettings.Development.json'
+        env:
+          ConnectionStrings.DefaultConnection: ${{ secrets.CONNECTION_STRING_HML }}
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -42,13 +49,6 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: App Settings Variable Substitution
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: '${{env.DOTNET_ROOT}}\myapp\appsettings.json'
-        env:
-          ConnectionStrings.DefaultConnection: ${{ secrets.CONNECTION_STRING_HML }}
-
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
