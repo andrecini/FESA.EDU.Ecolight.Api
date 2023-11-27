@@ -30,7 +30,6 @@ namespace Treinamento.REST.Data.Repositories
                             Company_Id as CompanyId
                          FROM Historic";
 
-            // Se pa ta errado aqui na variável Company_Id, André!!!! 
             var historics = _dbConnection.Query<Historic>(sql);
 
             return historics;

@@ -28,7 +28,6 @@ namespace Treinamento.REST.Tests.Mocks.Services
 
             mock.Setup(x => x.GetHistoricsByCompanyId(It.IsAny<int>())).Returns(HistoricData.GetList(10));
             mock.Setup(x => x.GetHistorics()).Returns(HistoricData.GetList(20));
-            mock.Setup(x => x.GetLastMonthHistoricsByCompanyId(It.IsAny<int>())).Returns(HistoricData.GetList(10));
 
             _service = mock.Object;
         }
