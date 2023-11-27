@@ -64,7 +64,7 @@ namespace Treinamento.REST.Tests
         {
             var service = new DeviceService(DeviceRepositoryMock.Get(), HistoricServiceMock.Get());
 
-            var device = service.UpdateDevice(1, DeviceData.GetDeviceInput()["Simples"]);
+            var device = service.UpdateDevice(100, DeviceData.GetDeviceInput()["Simples"]);
 
             Assert.Equivalent(DeviceData.GetSample()["Editado"], device);
         }

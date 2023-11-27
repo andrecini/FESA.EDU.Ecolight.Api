@@ -37,7 +37,7 @@ namespace Treinamento.REST.Tests.Mocks.Repository
             mock.Setup(x => x.UpdateUserRole(It.IsAny<int>(), It.IsAny<Roles>())).Returns(UsersData.GetSample()["Editado"]);
             mock.Setup(x => x.UpdateUserStatus(It.IsAny<int>(), It.IsAny<UserStatus>())).Returns(UsersData.GetSample()["Editado"]);
             mock.Setup(x => x.DeleteUserById(It.IsAny<int>())).Returns(true);
-            mock.Setup(x => x.VerifyUser(It.IsAny<string>())).Returns();
+            mock.Setup(x => x.VerifyUser(It.IsAny<string>())).Returns(UsersData.GetAuthentication()["Simples"]);
 
 
 

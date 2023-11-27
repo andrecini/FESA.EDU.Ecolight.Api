@@ -44,13 +44,48 @@ namespace Treinamento.REST.Tests.Mocks.Data
                 Password = "SenhaEncryptografada",
                 Active = UserStatus.Active,
                 Role = Roles.Administrator
+
+
             });
 
             return devices;
 
         }
 
-        public static Dictionary<string, Authentication> GetAuthentication()
+        public static Dictionary<string, UserInput> GetUserInput()
+        {
+            var devices = new Dictionary<string, UserInput>();
+
+            devices.Add("Simples", new UserInput
+            {
+               Username = "Usuario Teste",
+               Email = "teste@email.com",
+               Password = "SenhaEncryptografada",
+               Celular = "11981724993",
+               Cpf = "51332459803",
+               Uf = States.SaoPaulo,
+               Role = Roles.Administrator,
+               Active = UserStatus.Active,
+               EmpresaId = 1
+            });
+
+            devices.Add("Editado", new UserInput
+            {
+                Username = "Usuário Teste - Editado",
+                Email = "teste@email.com",
+                Password = "SenhaEncryptografada",
+                Celular = "11981724993",
+                Cpf = "51332459803",
+                Uf = States.SaoPaulo,
+                Role = Roles.Administrator,
+                Active = UserStatus.Active,
+                EmpresaId = 1
+            });
+
+            return devices;
+        }
+
+        public static Dictionary<string, Authentication> VerifyUser()
         {
             var devices = new Dictionary<string, Authentication>();
 
