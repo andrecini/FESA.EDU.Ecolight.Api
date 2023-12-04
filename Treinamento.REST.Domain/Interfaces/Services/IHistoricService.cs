@@ -11,8 +11,6 @@ namespace Treinamento.REST.Domain.Interfaces.Services
     {
         IEnumerable<Historic> GetHistoricsByCompanyId(int companyId);
 
-        IEnumerable<Historic> GetLastMonthHistoricsByCompanyId(int companyId);
-
         IEnumerable<Historic> GetHistorics();
     }
 }
